@@ -1,0 +1,50 @@
+[
+  {
+    "businessFacingMeta": {
+      "creationDate": "2024-07-14",
+      "version": "2",
+      "jiraTicket": "jira-102",
+      "businessPurpose": "This table is used to store example data."
+    },
+    "migration": {
+      "table": "example",
+      "fields": [
+        {
+          "field": "deprecated",
+          "dataType": "integer",
+          "constraints": ["not null"]
+        }
+      ],
+      "indexes": []
+    }
+  },
+  {
+    "businessFacingMeta": {
+      "creationDate": "2024-07-14",
+      "version": "1",
+      "jiraTicket": "jira-100",
+      "businessPurpose": "This table is used to store example2 data."
+    },
+    "migration": {
+      "table": "example2",
+      "fields": [
+        {
+          "field": "id",
+          "dataType": "integer",
+          "constraints": ["not null"]
+        },
+        {
+          "field": "name",
+          "dataType": "text"
+        }
+      ],
+      "indexes": [
+        {
+          "indexName": "example2_id",
+          "fields": ["id"],
+          "unique": true
+        }
+      ]
+    }
+  }
+]
