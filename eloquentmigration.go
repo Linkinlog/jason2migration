@@ -24,7 +24,7 @@ class Create{{.TableTitle }}Table extends Migration
      *
      * @return void
      */
-	public function up(): void
+    public function up(): void
     {
         Schema::create('{{.Table}}', function (Blueprint $table) {
             {{ .Fields }}
@@ -36,7 +36,7 @@ class Create{{.TableTitle }}Table extends Migration
      *
      * @return void
      */
-	public function down(): void
+    public function down(): void
     {
         Schema::dropIfExists('{{.Table}}');
     }
