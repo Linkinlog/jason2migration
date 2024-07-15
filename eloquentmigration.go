@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"slices"
 	"strings"
 	"text/template"
 	"time"
@@ -87,9 +88,9 @@ func fieldsToEloquent(fields []Field) string {
 	for i, field := range fields {
 		b.WriteString(fmt.Sprintf("$table->%s('%s')", sqlTypeToEloquent(field.DataType), field.Field))
 		if len(field.Constraints) > 0 {
-			for _, constraint := range field.Constraints {
-				b.WriteString(fmt.Sprintf("->%s()", constraintToEloquent(constraint)))
-			}
+			buildConstraints(&b, field.Constraints)
+		} else {
+			b.WriteString("->nullable()")
 		}
 		b.WriteString(";")
 		if i < len(fields)-1 {
@@ -97,6 +98,26 @@ func fieldsToEloquent(fields []Field) string {
 		}
 	}
 	return b.String()
+}
+
+func buildConstraints(b *strings.Builder, constraints []string) {
+	if !slices.Contains(constraints, "not null") {
+		b.WriteString("->nullable()")
+	}
+	for i, c := range constraints {
+		switch c {
+		case "not null":
+			b.WriteString("->nullable(false)")
+		case "auto increment":
+			b.WriteString("->autoIncrement()")
+		default:
+			slog.Warn("constraint not supported", "constraint", c)
+			panic("constraint not supported")
+		}
+		if i < len(constraints)-1 {
+			b.WriteString(", ")
+		}
+	}
 }
 
 func sqlTypeToEloquent(t string) string {
@@ -110,17 +131,4 @@ func sqlTypeToEloquent(t string) string {
 		return strings.ToLower(t)
 	}
 	return tToE[t]
-}
-
-func constraintToEloquent(c string) string {
-	c = strings.ToLower(c)
-
-	var cToE map[string]string = map[string]string{
-		"not null": "nullable",
-	}
-
-	if _, ok := cToE[c]; !ok {
-		return c
-	}
-	return cToE[c]
 }
