@@ -18,7 +18,6 @@ func (s *SqliteMigration) InputToMigration(input Input) (migration string) {
 		migration += updateTable(input)
 	}
 
-
 	return migration
 }
 

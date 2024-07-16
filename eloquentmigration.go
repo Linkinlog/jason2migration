@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Schema;
 
 {{ .Meta }}
 
-class Create{{.TableTitle }}Table extends Migration
+class {{.ActionTitle}}{{.TableTitle }}Table extends Migration
 {
     /**
      * Run the migrations.
@@ -27,7 +27,7 @@ class Create{{.TableTitle }}Table extends Migration
      */
     public function up(): void
     {
-        Schema::create('{{.Table}}', function (Blueprint $table) {
+        Schema::{{.Action}}('{{.Table}}', function (Blueprint $table) {
             {{ .Fields }}
         });
     }
@@ -47,19 +47,30 @@ class Create{{.TableTitle }}Table extends Migration
 type EloquentMigration struct{}
 
 func (e *EloquentMigration) InputToMigration(input Input) (migration string) {
-	t := template.Must(template.New("migration").Parse(templateLayout))
+	action := "create"
+	actionTitle := "Create"
+	if !input.Migration.CreateTable {
+		action = "table"
+		actionTitle = "Update"
+	}
+
 	data := struct {
-		Table      string
-		TableTitle string
-		Fields     string
-		Meta       string
+		Table       string
+		TableTitle  string
+		Action      string
+		ActionTitle string
+		Fields      string
+		Meta        string
 	}{
-		TableTitle: fmt.Sprintf("%s%s", strings.ToUpper(string(input.Migration.Table[0])), string(input.Migration.Table[1:])),
-		Table:      input.Migration.Table,
-		Fields:     fieldsToEloquent(input.Migration.Fields),
+		TableTitle:  fmt.Sprintf("%s%s", strings.ToUpper(string(input.Migration.Table[0])), string(input.Migration.Table[1:])),
+		Table:       input.Migration.Table,
+		Action:      action,
+		ActionTitle: actionTitle,
+		Fields:      fieldsToEloquent(input.Migration.Fields),
 		Meta:        input.BusinessFacingMeta.String(),
 	}
 
+	t := template.Must(template.New("migration").Parse(templateLayout))
 	writer := &strings.Builder{}
 	err := t.Execute(writer, data)
 	if err != nil {
