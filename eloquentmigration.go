@@ -57,7 +57,7 @@ func (e *EloquentMigration) InputToMigration(input Input) (migration string) {
 		TableTitle: fmt.Sprintf("%s%s", strings.ToUpper(string(input.Migration.Table[0])), string(input.Migration.Table[1:])),
 		Table:      input.Migration.Table,
 		Fields:     fieldsToEloquent(input.Migration.Fields),
-		Meta:       applyMetadata(input.BusinessFacingMeta),
+		Meta:        input.BusinessFacingMeta.String(),
 	}
 
 	writer := &strings.Builder{}

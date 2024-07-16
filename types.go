@@ -14,10 +14,15 @@ type BusinessFacingMeta struct {
 	BusinessPurpose string `json:"businessPurpose"`
 }
 
+func (bfm *BusinessFacingMeta) String() string {
+	return fmt.Sprintf("/*\nCreation Date: %s\nVersion: %s\nJira Ticket: %s\nBusiness Purpose: %s\n*/", bfm.CreationDate, bfm.Version, bfm.JiraTicket, bfm.BusinessPurpose)
+}
+
 type Migration struct {
-	Table   string  `json:"table"`
-	Fields  []Field `json:"fields"`
-	Indexes []Index `json:"indexes"`
+	Table       string  `json:"table"`
+	CreateTable bool    `json:"createTable"`
+	Fields      []Field `json:"fields"`
+	Indexes     []Index `json:"indexes"`
 }
 
 type Field struct {
@@ -27,7 +32,7 @@ type Field struct {
 }
 
 func (f *Field) String() string {
-	return fmt.Sprintf("\t%s %s%s", f.Field, f.DataType, applyConstraints(f.Constraints))
+	return fmt.Sprintf("%s %s%s", f.Field, f.DataType, applyConstraints(f.Constraints))
 }
 
 type Index struct {

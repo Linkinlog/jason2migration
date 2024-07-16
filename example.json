@@ -8,6 +8,7 @@
     },
     "migration": {
       "table": "example",
+      "createTable": false,
       "fields": [
         {
           "field": "deprecated",
@@ -27,6 +28,7 @@
     },
     "migration": {
       "table": "example2",
+      "createTable": true,
       "fields": [
         {
           "field": "id",

@@ -9,13 +9,15 @@ import (
 type SqliteMigration struct{}
 
 func (s *SqliteMigration) InputToMigration(input Input) (migration string) {
-	migration += applyMetadata(input.BusinessFacingMeta)
+	migration += input.BusinessFacingMeta.String()
 	migration += "\n\n"
 
-	migration += fmt.Sprintf("Create Table if not exists %s\n", input.Migration.Table)
-	migration += handleFields(input.Migration.Fields)
+	if input.Migration.CreateTable {
+		migration += createTable(input)
+	} else {
+		migration += updateTable(input)
+	}
 
-	migration += fmt.Sprintf("/*\nDrop Table if exists %s;\n*/\n", input.Migration.Table)
 
 	return migration
 }
@@ -33,21 +35,48 @@ func (s *SqliteMigration) ToFile(migration, table string) error {
 	return nil
 }
 
-func handleFields(fields []Field) (query string) {
+func updateTable(input Input) (query string) {
+	query += fmt.Sprintf("Alter Table %s\n", input.Migration.Table)
+	query += updateFields(input.Migration.Fields)
+	query += dropNewFields(input.Migration.Fields, input.Migration.Table)
+	return query
+}
+
+func updateFields(fields []Field) (query string) {
+	query += "(\n"
+	for _, field := range fields {
+		query += fmt.Sprintf("\tAdd Column %s;\n", field.String())
+	}
+	query += "\n);\n\n"
+	return query
+}
+
+func dropNewFields(fields []Field, table string) (query string) {
+	query += "/*\n"
+	for _, field := range fields {
+		query += fmt.Sprintf("Alter Table %s Drop Column %s;\n", table, field.Field)
+	}
+	query += "*/\n"
+	return query
+}
+
+func createTable(input Input) (query string) {
+	query += fmt.Sprintf("Create Table if not exists %s\n", input.Migration.Table)
+	query += createFields(input.Migration.Fields)
+	query += fmt.Sprintf("/*\nDrop Table if exists %s;\n*/\n", input.Migration.Table)
+	return query
+}
+
+func createFields(fields []Field) (query string) {
 	query += "(\n"
 	for i, field := range fields {
-		query += field.String()
+		query += fmt.Sprintf("\t%s", field.String())
 		if i < len(fields)-1 {
 			query += ",\n"
 		}
 	}
 	query += "\n);\n\n"
 	return query
-}
-
-func applyMetadata(meta BusinessFacingMeta) (metadata string) {
-	metadata = fmt.Sprintf("/*\nCreation Date: %s\nVersion: %s\nJira Ticket: %s\nBusiness Purpose: %s\n*/", meta.CreationDate, meta.Version, meta.JiraTicket, meta.BusinessPurpose)
-	return metadata
 }
 
 func applyConstraints(constraints []string) (field string) {
