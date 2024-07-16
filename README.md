@@ -14,46 +14,13 @@ Strategy (sqlite, eloquent) (default "sqlite")
 ```
 
 ### Example JSON input:
-```json
-[
-  {
-    "businessFacingMeta": {
-      "creationDate": "2024-07-14",
-      "version": "1",
-      "jiraTicket": "jira-100",
-      "businessPurpose": "This table is used to store user data."
-    },
-    "migration": {
-      "table": "users",
-      "fields": [
-        {
-          "field": "id",
-          "dataType": "integer", // must map to a supported data type
-          "constraints": ["not null"] // must map to a supported constraint
-        },
-        {
-          "field": "name",
-          "dataType": "text"
-        }
-      ],
-      "indexes": [
-        {
-          "indexName": "users_id",
-          "fields": ["id"],
-          "unique": true
-        }
-      ]
-    }
-  }
-]
-```
+`Please refer to the example.json file in the root of the project`
 
 ## Known Limitations
 - The application currently only supports SQLite and Eloquent migration formats.
 - The application does not handle indexes (WIP)
 - The application does not support foreign keys, primary keys, or other constraints
 - The application is fairly brittle with constraints and data types, and will likely break if you provide an unsupported type or constraint.
-- The application only supports creation of new tables, not altering existing tables.
 
 ## Unknown Limitations
 - Probably a lot
