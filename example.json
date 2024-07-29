@@ -8,7 +8,7 @@
     },
     "migration": {
       "table": "example",
-      "createTable": false,
+      "createTable": true,
       "fields": [
         {
           "field": "deprecated",
@@ -16,7 +16,13 @@
           "constraints": ["not null"]
         }
       ],
-      "indexes": []
+      "indexes": [
+        {
+          "indexName": "example2_id",
+          "fields": ["id"],
+          "unique": true
+        }
+      ]
     }
   },
   {
@@ -27,8 +33,8 @@
       "businessPurpose": "This table is used to store example2 data."
     },
     "migration": {
-      "table": "example2",
-      "createTable": true,
+      "table": "example",
+      "createTable": false,
       "fields": [
         {
           "field": "id",
@@ -40,13 +46,7 @@
           "dataType": "text"
         }
       ],
-      "indexes": [
-        {
-          "indexName": "example2_id",
-          "fields": ["id"],
-          "unique": true
-        }
-      ]
+      "indexes": []
     }
   }
 ]

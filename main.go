@@ -13,7 +13,7 @@ const (
 )
 
 func main() {
-	sFlag := flag.String("s", "sqlite", "Strategy (sqlite, eloquent)")
+	sFlag := flag.String("s", "sqlite", "Strategy (sqlite, eloquent, mysql)")
 	inputFile := flag.String("f", "input.json", "Input file")
 	write := flag.Bool("w", false, "Write to file")
 	flag.Parse()
@@ -25,6 +25,8 @@ func main() {
 		s = &SqliteMigration{}
 	case "eloquent":
 		s = &EloquentMigration{}
+	case "mysql":
+		s = &MysqlMigration{}
 	}
 
 	inputs, err := createInputs(*inputFile)

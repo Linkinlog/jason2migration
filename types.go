@@ -35,6 +35,13 @@ func (f *Field) String() string {
 	return fmt.Sprintf("%s %s%s", f.Field, f.DataType, applyConstraints(f.Constraints))
 }
 
+func applyConstraints(constraints []string) (field string) {
+	for _, constraint := range constraints {
+		field += fmt.Sprintf(" %s", constraint)
+	}
+	return field
+}
+
 type Index struct {
 	IndexName string   `json:"indexName"`
 	Fields    []string `json:"fields"`

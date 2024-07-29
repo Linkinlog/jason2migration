@@ -5,19 +5,20 @@ The application takes in a json structure that outlines a migration and business
 
 ## Usage
 ```sh
-./jason2migration -h
 Usage of ./jason2migration:
--f string
-Input file (default "input.json")
--s string
-Strategy (sqlite, eloquent) (default "sqlite")
+  -f string
+        Input file (default "input.json")
+  -s string
+        Strategy (sqlite, eloquent) (default "sqlite")
+  -w    Write to file
 ```
 
 ### Example JSON input:
 `Please refer to the example.json file in the root of the project`
 
 ## Known Limitations
-- The application currently only supports SQLite and Eloquent migration formats.
+- The application currently only supports SQLite, MySQL and Eloquent migration formats.
+- When altering tables, we only support adding columns, not removing/renaming them.
 - The application does not handle indexes (WIP)
 - The application does not support foreign keys, primary keys, or other constraints
 - The application is fairly brittle with constraints and data types, and will likely break if you provide an unsupported type or constraint.
@@ -29,13 +30,7 @@ Strategy (sqlite, eloquent) (default "sqlite")
 ### To generate a SQLite migration file:
 
 ```sh
-./jason2migration -f path/to/your/input.json -s sqlite
-```
-
-### To generate an Eloquent migration file:
-
-```sh
-./jason2migration -f path/to/your/input.json -s eloquent
+./jason2migration -f path/to/your/input.json -s sqlite -w
 ```
 
 ## Installation

@@ -1,3 +1,4 @@
 jason2migration
 *.sql
+*.sqlite
 *.php
